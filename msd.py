@@ -8,12 +8,13 @@ import time
 import glob
 import datetime
 import sqlite3
+import operator
+import json
+import random
 import numpy as np
 from sklearn.cluster import KMeans
 from pyechonest import config, artist
 from pyechonest.util import EchoNestIOError, EchoNestAPIError
-
-
 
 config.ECHO_NEST_API_KEY="VQXAWFOTEXJJTNJAP"
 msd_subset_path= os.getcwd() + '/MillionSongSubset'
@@ -70,19 +71,43 @@ def get_key_tempo(filename):
             a.writerow([tempo, key, ar, title, terms[0]['name']])
     h5.close()
 
+def get_artist():
+    d = {}
+    csvReader = csv.reader(open('points copy.csv', 'rb'), delimiter=',')
+
+
+    for row in csvReader:
+        if row[2] not in d:
+            d[row[2]] =1
+        else:
+            d[row[2]] += 1
+    #print d
+
+    sorted_d = sorted(d.items(), key=operator.itemgetter(1), reverse=True)
+    rand_sample = [sorted_d[i] for i in sorted(random.sample(xrange(len(sorted_d)), 100))]
+    print rand_sample
+    writer = csv.writer(open('randomartists.csv', 'wb'))
+    for key, value in rand_sample:
+        writer.writerow([key, value])
+
+    writer = csv.writer(open('artists.csv', 'wb'))
+    for key, value in sorted_d:
+        writer.writerow([key, value])
+
+
 
 def main():
     # with open('points.csv', 'w') as fp:
     #     a = csv.writer(fp, delimiter=',')
     #     a.writerow(['tempo', 'key', 'ar', 'title', 'style'])
     # apply_to_all_files(msd_subset_data_path, func=get_key_tempo)
-    a = []
-    csvReader = csv.reader(open('points copy.csv', 'rb'), delimiter=',')
-    for row in csvReader:
-        a.append([row[0], row[1]])
-    fb = open('arr', 'w')
-    fb.write(str(a))
-    fb.close()
+    # a = []
+    # csvReader = csv.reader(open('points copy.csv', 'rb'), delimiter=',')
+    # for row in csvReader:
+    #     a.append([row[0], row[1]])
+    # fb = open('arr', 'w')
+    # fb.write(str(a))
+    # fb.close()
     # arr = np.array(a)
     # print arr
     # km = KMeans(n_clusters=777)
@@ -94,5 +119,6 @@ def main():
     #     for center in km.cluster_centers_:
     #         a.writerow(center)
 
+    get_artist()
 if __name__=='__main__':
     main()
