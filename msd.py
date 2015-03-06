@@ -15,6 +15,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 from pyechonest import config, artist
 from pyechonest.util import EchoNestIOError, EchoNestAPIError
+from collections import defaultdict
 
 config.ECHO_NEST_API_KEY="VQXAWFOTEXJJTNJAP"
 msd_subset_path= os.getcwd() + '/MillionSongSubset'
@@ -95,6 +96,93 @@ def get_artist():
         writer.writerow([key, value])
 
 
+def get_genres():
+    d = {}
+    csvReader = csv.reader(open('points copy.csv', 'rb'), delimiter=',')
+
+    for row in csvReader:
+        if row[4] not in d:
+            d[row[4]] =1
+        else:
+            d[row[4]] += 1
+    #print d
+
+    sorted_d = sorted(d.items(), key=operator.itemgetter(1), reverse=True)
+    rand_sample = [sorted_d[i] for i in sorted(random.sample(xrange(len(sorted_d)), 100))]
+    print rand_sample
+    writer = csv.writer(open('randomgenres.csv', 'wb'))
+    for key, value in rand_sample:
+        writer.writerow([key, value])
+
+def artist_to_key():
+    d = defaultdict(list)
+    l = list(tuple())
+    csvReader = csv.reader(open('points copy.csv', 'rb'), delimiter=',')
+
+
+    for row in csvReader:
+        l.append((row[2], row[1]))
+        d[row[4]].append(row[1])
+
+    rand = [l[i] for i in sorted(random.sample(xrange(len(l)), 100))]
+
+    writer = csv.writer(open('artist_key.csv', 'w'))
+    for key, value in rand:
+        writer.writerow([key, value])
+    print l
+
+def artist_to_tempo():
+    d = defaultdict(list)
+    l = list(tuple())
+    csvReader = csv.reader(open('points copy.csv', 'rb'), delimiter=',')
+
+
+    for row in csvReader:
+        l.append((row[2], row[0]))
+        d[row[4]].append(row[1])
+
+    rand = [l[i] for i in sorted(random.sample(xrange(len(l)), 100))]
+
+    writer = csv.writer(open('artist_tempo.csv', 'w'))
+    for key, value in rand:
+        writer.writerow([key, value])
+    print l
+
+def genre_to_key():
+    d = defaultdict(list)
+    l = list(tuple())
+    csvReader = csv.reader(open('points copy.csv', 'rb'), delimiter=',')
+
+
+    for row in csvReader:
+        l.append((row[4], row[1]))
+        d[row[4]].append(row[1])
+
+    rand = [l[i] for i in sorted(random.sample(xrange(len(l)), 100))]
+
+    writer = csv.writer(open('genre_key.csv', 'w'))
+    for key, value in rand:
+        writer.writerow([key, value])
+    print l
+
+def genre_to_tempo():
+    d = defaultdict(list)
+    l = list(tuple())
+    csvReader = csv.reader(open('points copy.csv', 'rb'), delimiter=',')
+
+
+    for row in csvReader:
+        l.append((row[4], row[0]))
+        d[row[4]].append(row[0])
+
+    rand = [l[i] for i in sorted(random.sample(xrange(len(l)), 100))]
+
+    writer = csv.writer(open('genre_tempo.csv', 'w'))
+    for key, value in rand:
+        writer.writerow([key, value])
+    print l
+
+
 
 def main():
     # with open('points.csv', 'w') as fp:
@@ -119,6 +207,7 @@ def main():
     #     for center in km.cluster_centers_:
     #         a.writerow(center)
 
-    get_artist()
+    #get_artist()
+    artist_to_tempo()
 if __name__=='__main__':
     main()
