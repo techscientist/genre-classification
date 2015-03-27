@@ -234,9 +234,27 @@ def write_key_tempo():
     fb.write(str(a))
     fb.close()
 
+def change_kmeansClusters():
+    csv_reader = csv.reader(open('kmeans_clustercenters.csv', 'rb'), delimiter=',')
+
+    for row in csv_reader:
+        d = {}
+        d['x'] = float(row[0])
+        d['y'] = float(row[1])
+        print json.dumps(d) + ","
+
+
+
+
+
+        # print "{" + 'x:' + row[0] + ", y:" + row[1] + ", title:" + "\"" + row[2] + "\"" + ", artist:" + "\"" + row[3] + "\"" +\
+        #       ', genre:' + "\"" + row[4] + "\"" + "},"
+
+
+
 
 def main():
-    apply_kmeans()
+    change_kmeansClusters()
 
 if __name__=='__main__':
     main()
